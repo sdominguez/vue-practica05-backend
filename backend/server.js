@@ -41,13 +41,30 @@ app.get('/usuarios', async(req,res) =>{
     try {
         const usuarios = await db.collection('usuarios').find().toArray();
         res.json({ usuarios });
-        console.log("Respuesta de: ",usuarios)
+        console.log("Respuesta:\n",usuarios);
     } catch (error) {
         console.error('Error al obtener usuarios: ',error);
         res.status(500).json({ error: 'Error Interno del Servidor'});
     }
 });
 
+
+app.post('/login', async(req, res)=>{
+    try{
+        const {correo, password} = req.body;
+        const usuario = await Usuario.findOne({correo, password});
+        console.log(`\nEl usuario ${correo} se está intentando loguear`);
+        if(usuario){
+            res.json(usuario);
+        }else{
+            res.status(401).json({mensaje: 'Credenciales inválidad'});
+        }
+    }catch(error){
+        console.error('Error en el logueo de usuario', error);
+        res.status(500).json({mensaje: 'Error interno en el servidor'});
+
+    }
+});
 
 //POST - Registrar un dato en nuestra base 
 
